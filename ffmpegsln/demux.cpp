@@ -12,10 +12,7 @@ demux::demux()
 demux::~demux()
 {
 }
-int demux::yuv2rgb(const std::string& yuvpath, const std::string& rgbpath)
-{
-	return 0;
-}
+
 int demux::yuv2jpeg(const std::string& yuvpath, const std::string& jpegpath)
 {
 	AVFormatContext* pFormatCtx;
@@ -225,6 +222,7 @@ int demux::simpledemuxmp4(const std::string& inpath, const std::string& vepath, 
 	}
 	std::cout << "finish ..." << std::endl;
 
+	return 0;
 }
 int demux::demuxmp4(const std::string& inpath, const std::string& vepath, const std::string& aupath)
 {

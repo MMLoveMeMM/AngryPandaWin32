@@ -5,8 +5,14 @@
 #include<stdio.h>
 #include <iostream>
 #include "demux.h"
+#include "filter.h"
+#include "swscale.h"
+#include "format.h"
 using namespace std;
 using namespace mux;
+using namespace fter;
+using namespace sws;
+using namespace fmt;
 
 extern "C"
 {
@@ -26,7 +32,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	//demux::demuxmp4(in_filename, out_filename_v, out_filename_a);
 
 	// 转出第一帧
-	demux::yuv2jpeg("ds_480x272.yuv", "445566.jpg");
+	//demux::yuv2jpeg("ds_480x272.yuv", "445566.jpg");
+
+	//filter::yuvfilter("ds_480x272.yuv","filter_ds_480x272.yuv");
+
+	//swscale::yuv2rgb("ds_480x272.yuv", "ds_480x272.rgb");
+
+	format::mp42avi("input.mp4", "input.avi");
 
 	getchar();
 	return 0;
