@@ -16,9 +16,9 @@ template <typename T>
 T safequeue<T>::Pop()
 {
 	pthread_mutex_lock(&mutexsum);
-	T=mQueue.pop();
+	T t=mQueue.pop();
 	pthread_mutex_unlock(&mutexsum);
-	return T;
+	return t;
 }
 
 template <typename T>
