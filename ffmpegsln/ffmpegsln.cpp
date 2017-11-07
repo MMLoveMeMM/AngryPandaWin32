@@ -4,15 +4,20 @@
 #include "stdafx.h"
 #include<stdio.h>
 #include <iostream>
+
+#include "pthread.h"
+
 #include "demux.h"
 #include "filter.h"
 #include "swscale.h"
 #include "format.h"
+#include "aac.h"
 using namespace std;
 using namespace mux;
 using namespace fter;
 using namespace sws;
 using namespace fmt;
+using namespace aacn;
 
 extern "C"
 {
@@ -38,7 +43,12 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	//swscale::yuv2rgb("ds_480x272.yuv", "ds_480x272.rgb");
 
-	format::mp42avi("input.mp4", "input.avi");
+	//format::mp42avi("input.mp4", "input.avi");
+
+	//swscale::yuv2h264("ds_480x272.yuv", "ds_480x272.h264");
+
+	//aac::pcm2aac("test1.pcm", "pcm2aac.aac");
+	aac::pcm2aacdetail("test1.pcm", "pcm2aacext.aac");
 
 	getchar();
 	return 0;

@@ -56,6 +56,9 @@ int swscale::yuv2rgb(const std::string& yuvpath, const std::string& rgbpath)
 	int dst_bpp = av_get_bits_per_pixel(av_pix_fmt_desc_get(dst_pixfmt));
 
 	uint8_t *src_data[4];
+	/*
+	* linesize 分别代表各个数据的长度
+	*/
 	int src_linesize[4];
 
 	uint8_t *dst_data[4];
@@ -229,6 +232,257 @@ int swscale::yuv2rgb(const std::string& yuvpath, const std::string& rgbpath)
 	av_freep(&dst_data[0]);
 
 	std::cout << "process finish" << std::endl;
+
+	return 0;
+
+}
+
+int flush_encoder(AVFormatContext *fmt_ctx, unsigned int stream_index)
+{
+	int ret;
+	int got_frame;
+	AVPacket enc_pkt;
+
+	if (!(fmt_ctx->streams[stream_index]->codec->codec->capabilities & CODEC_CAP_DELAY))
+	{
+		return 0;
+	}
+
+	while (1)
+	{
+		enc_pkt.data = NULL;
+		enc_pkt.size = 0;
+		av_init_packet(&enc_pkt);
+		ret = avcodec_encode_audio2(fmt_ctx->streams[stream_index]->codec, &enc_pkt, NULL, &got_frame);
+		av_frame_free(NULL);
+		if (ret < 0)
+		{
+			break;
+		}
+		if (!got_frame)
+		{
+			ret = 0;
+			break;
+		}
+
+		std::cout << "flush encoder : successed to encode 1 frame size : " << enc_pkt.size << std::endl;
+
+		ret = av_write_frame(fmt_ctx, &enc_pkt);
+		if (ret < 0)
+		{
+			break;
+		}
+
+	}
+
+	return ret;
+}
+
+/*
+* <1> : 先定格式
+*/
+int swscale::yuv2h264(const std::string& yuvpath, const std::string& h264paht)
+{
+
+	AVFormatContext *fmt_ctx;
+	AVOutputFormat *fmt;
+	AVStream *video_st;
+	AVCodecContext* codec_ctx;
+	AVCodec *codec;
+	AVPacket pkt;
+	uint8_t *picture_buf;
+	AVFrame *pFrame;
+	int picture_size;
+	int y_size;
+	int framecnt = 0;
+
+	FILE *in_file;
+	fopen_s(&in_file, yuvpath.c_str(), "rb");
+	int in_w = 480, in_h = 272;
+	int framenum = 100;
+
+	/*
+	* 注册所有的模块
+	*/
+	av_register_all();
+	/*
+	* 分配/获取格式上下文
+	*/
+	fmt_ctx = avformat_alloc_context();
+
+	/*
+	* 根据输出文件名推测输出的文件格式,并且返回
+	*/
+	fmt = av_guess_format(NULL, h264paht.c_str(), NULL);
+
+	fmt_ctx->oformat = fmt;
+
+	/*
+	* 函数调用成功之后创建的AVIOContext结构体
+	*/
+	if (avio_open(&fmt_ctx->pb, h264paht.c_str(), AVIO_FLAG_WRITE) < 0)
+	{
+		std::cout << "failed to open output file" << std::endl;
+		return -1;
+	}
+
+	/*
+	* 创建一个流通道,这里是视频流通道
+	*/
+	video_st = avformat_new_stream(fmt_ctx, 0);
+
+	if (video_st == NULL)
+	{
+		return -1;
+	}
+
+	codec_ctx = video_st->codec;
+	codec_ctx->codec_id = fmt->video_codec;
+	codec_ctx->codec_type = AVMEDIA_TYPE_VIDEO;
+	codec_ctx->pix_fmt = AV_PIX_FMT_YUV420P;
+	codec_ctx->width = in_w;
+	codec_ctx->height = in_h;
+	codec_ctx->bit_rate = 40 * 1000;
+	codec_ctx->gop_size = 250;
+
+	codec_ctx->time_base.num = 1;
+	codec_ctx->time_base.den = 25;
+
+	codec_ctx->qmin = 10;
+	codec_ctx->qmax = 15;
+
+	codec_ctx->max_b_frames = 3;
+
+	AVDictionary *param = 0;
+	if (codec_ctx->codec_id == AV_CODEC_ID_H264)
+	{
+		av_dict_set(&param,"preset","slow",0);
+		av_dict_set(&param, "tune", "zerolatency", 0);
+	}
+
+	if (codec_ctx->codec_id == AV_CODEC_ID_H265)
+	{
+		av_dict_set(&param, "preset", "ultrafast", 0);
+		av_dict_set(&param, "tune", "zero-latency", 0);
+	}
+
+	/*
+	* 打印所有的格式信息
+	*/
+	av_dump_format(fmt_ctx, 0, h264paht.c_str(), 1);
+
+	/*
+	* 根据上面的配置,试图获取编码器
+	*/
+	codec = avcodec_find_encoder(codec_ctx->codec_id);
+	if (!codec)
+	{
+		std::cout << "can not find encodec" << std::endl;
+		return -1;
+	}
+	/*
+	* 打开编码器
+	* 如果打开成功,就赋值给编码上下文
+	*/
+	if (avcodec_open2(codec_ctx, codec, &param) < 0)
+	{
+		std::cout << "fail to open encodec!" << std::endl;
+		return -1;
+	}
+	/*
+	* 初始化帧缓存
+	*/
+	pFrame = av_frame_alloc();
+	/*
+	* 根据格式和大小获取一帧的大小
+	*/
+	picture_size = avpicture_get_size(codec_ctx->pix_fmt, codec_ctx->width, codec_ctx->height);
+	/*
+	* 分配内存大小
+	*/
+	picture_buf = (uint8_t *)av_malloc(picture_size);
+	/*
+	* 本质上是为已经分配的空间的结构体AVPicture挂上一段用于保存数据的空间，这个结构体中有一个指针数组data[4]，挂在这个数组里.
+	*/
+	avpicture_fill((AVPicture*)pFrame, picture_buf, codec_ctx->pix_fmt, codec_ctx->width, codec_ctx->height);
+
+	/*
+	* 写视频文件头
+	*/
+	avformat_write_header(fmt_ctx, NULL);
+	/*
+	* 初始化用于保存数据的Packet包而已
+	*/
+	av_new_packet(&pkt, picture_size);
+
+	y_size = codec_ctx->width*codec_ctx->height;
+
+	for (int i = 0; i < framenum; i++)
+	{
+		/*
+		* 从文件中读取数据
+		*/
+		if (fread(picture_buf, 1, y_size * 3 / 2, in_file) <= 0)
+		{
+			std::cout << "failed to read raw data !" << std::endl;
+			return -1;
+		}
+		else if (feof(in_file))
+		{
+			break;
+		}
+
+		pFrame->data[0] = picture_buf;
+		pFrame->data[1] = picture_buf + y_size;
+		pFrame->data[2] = picture_buf + y_size * 5 / 4;
+		/*
+		* 时间戳转换参考 :
+		* http://blog.csdn.net/h514434485/article/details/77619872
+		* http://blog.csdn.net/neustar1/article/details/38235113
+		* http://www.cnblogs.com/yinxiangpei/p/3890462.html
+		* http://www.cnblogs.com/yinxiangpei/articles/3892982.html
+		*/
+		pFrame->pts = i*(video_st->time_base.den) / ((video_st->time_base.num) * 25);
+		int got_picture = 0;
+		/*
+		* 用于编码一帧视频数据,并保存到pkt中
+		*/
+		int ret = avcodec_encode_video2(codec_ctx, &pkt, pFrame, &got_picture);
+		if (ret < 0)
+		{
+			std::cout << "failed to encode !" << std::endl;
+			return -1;
+		}
+
+		if (got_picture == 1)
+		{
+			std::cout << "success to encode frame : " << framecnt << "\t size : " << pkt.size << std::endl;
+			framecnt++;
+			pkt.stream_index = video_st->index;
+			/*
+			* 输出一帧视音频数据
+			*/
+			ret = av_write_frame(fmt_ctx, &pkt);
+			av_free_packet(&pkt);
+		}
+
+	}
+
+	/*
+	* flush还存在缓存中的数据帧
+	*/
+	int ret = flush_encoder(fmt_ctx,0);
+	if (video_st)
+	{
+		avcodec_close(video_st->codec);
+		av_free(pFrame);
+		av_free(picture_buf);
+	}
+
+	avio_close(fmt_ctx->pb);
+	avformat_free_context(fmt_ctx);
+
+	fclose(in_file);
 
 	return 0;
 

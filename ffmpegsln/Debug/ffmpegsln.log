@@ -1,33 +1,20 @@
-﻿Build started 2017/10/26 星期四 下午 04:39:50.
-     1>Project "C:\Users\rd0348\documents\visual studio 2013\Projects\ffmpegsln\ffmpegsln\ffmpegsln.vcxproj" on node 2 (Rebuild target(s)).
+﻿Build started 2017/11/6 星期一 下午 07:46:20.
+     1>Project "C:\Users\rd0348\documents\visual studio 2013\Projects\ffmpegsln\ffmpegsln\ffmpegsln.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\rd0348\Documents\Visual Studio 2013\Projects\ffmpegsln\ffmpegsln\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /U_CRT_SECURE_NO_WARNINGS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Debug\ffmpegsln.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\rd0348\Documents\Visual Studio 2013\Projects\ffmpegsln\ffmpegsln\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /U_CRT_SECURE_NO_WARNINGS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\ffmpegsln.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ffmpegsln.cpp
      1>cl : Command line warning D9025: overriding '/D_CRT_SECURE_NO_WARNINGS' with '/U_CRT_SECURE_NO_WARNINGS'
-         stdafx.cpp
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\rd0348\Documents\Visual Studio 2013\Projects\ffmpegsln\ffmpegsln\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /U_CRT_SECURE_NO_WARNINGS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\ffmpegsln.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt demux.cpp ffmpegsln.cpp filter.cpp format.cpp swscale.cpp
-     1>cl : Command line warning D9025: overriding '/D_CRT_SECURE_NO_WARNINGS' with '/U_CRT_SECURE_NO_WARNINGS'
-         swscale.cpp
-         format.cpp
-     1>c:\users\rd0348\documents\visual studio 2013\projects\ffmpegsln\ffmpegsln\format.cpp(46): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\rd0348\documents\visual studio 2013\projects\ffmpegsln\ffmpegsln\format.cpp(92): warning C4244: '=' : conversion from 'int64_t' to 'int', possible loss of data
-         filter.cpp
          ffmpegsln.cpp
-         demux.cpp
-     1>c:\users\rd0348\documents\visual studio 2013\projects\ffmpegsln\ffmpegsln\demux.cpp(169): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\rd0348\documents\visual studio 2013\projects\ffmpegsln\ffmpegsln\demux.cpp(333): warning C4309: '=' : truncation of constant value
-     1>c:\users\rd0348\documents\visual studio 2013\projects\ffmpegsln\ffmpegsln\demux.cpp(334): warning C4309: '=' : truncation of constant value
-     1>c:\users\rd0348\documents\visual studio 2013\projects\ffmpegsln\ffmpegsln\demux.cpp(339): warning C4309: '=' : truncation of constant value
-         Generating Code...
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\rd0348\documents\visual studio 2013\Projects\ffmpegsln\Debug\ffmpegsln.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Users\rd0348\Documents\Visual Studio 2013\Projects\ffmpegsln\ffmpegsln\lib" avcodec.lib avformat.lib avutil.lib avdevice.lib avfilter.lib postproc.lib swresample.lib swscale.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\rd0348\documents\visual studio 2013\Projects\ffmpegsln\Debug\ffmpegsln.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\rd0348\documents\visual studio 2013\Projects\ffmpegsln\Debug\ffmpegsln.lib" /MACHINE:X86 Debug\demux.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\rd0348\documents\visual studio 2013\Projects\ffmpegsln\Debug\ffmpegsln.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Users\rd0348\Documents\Visual Studio 2013\Projects\ffmpegsln\ffmpegsln\lib" avcodec.lib avformat.lib avutil.lib avdevice.lib avfilter.lib postproc.lib swresample.lib swscale.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\rd0348\documents\visual studio 2013\Projects\ffmpegsln\Debug\ffmpegsln.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\rd0348\documents\visual studio 2013\Projects\ffmpegsln\Debug\ffmpegsln.lib" /MACHINE:X86 Debug\aac.obj
+         Debug\demux.obj
          Debug\ffmpegsln.obj
          Debug\filter.obj
          Debug\format.obj
          Debug\stdafx.obj
          Debug\swscale.obj
          ffmpegsln.vcxproj -> C:\Users\rd0348\documents\visual studio 2013\Projects\ffmpegsln\Debug\ffmpegsln.exe
-     1>Done Building Project "C:\Users\rd0348\documents\visual studio 2013\Projects\ffmpegsln\ffmpegsln\ffmpegsln.vcxproj" (Rebuild target(s)).
+     1>Done Building Project "C:\Users\rd0348\documents\visual studio 2013\Projects\ffmpegsln\ffmpegsln\ffmpegsln.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.72
+Time Elapsed 00:00:00.61

@@ -36,6 +36,12 @@
     <ClInclude Include="format.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="aac.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="safequeue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -54,6 +60,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="format.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="aac.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="safequeue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
